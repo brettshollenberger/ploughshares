@@ -10,22 +10,7 @@ module Ploughshares
       end
 
       def from_gtin_12(source)
-        gtin12       = GTIN12.new(code: source)
-        company_code = gtin12.company_code
-        product_code = gtin12.product_code
-
-        case company_code
-        when /[0-2]00$/
-          code = "#{company_code[0..1]}#{product_code[-3..-1]}#{company_code[2]}"
-        when /[3-9]00$/
-          code = "#{company_code[0..2]}#{product_code[-2..-1]}3"
-        when /[0-9]0$/
-          code = "#{company_code[0..3]}#{product_code[-1]}4"
-        else
-          code = "#{company_code[0..4]}#{product_code[-1]}"
-        end
-
-        new(code: code)
+        Converters::GTIN12ToGTIN6Converter.new(gtin12: source).convert!
       end
     end
 
